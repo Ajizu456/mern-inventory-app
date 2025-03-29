@@ -11,9 +11,10 @@ A modern inventory management application built with **React** (frontend). This 
 - ✅ Delete existing items
 - ✅ Real-time keyword search
 - ✅ Data persistence using `localStorage`
-- 🛠 Planned: Toast notifications
+- ✅ Toast notifications
 - 🧠 Planned: Auto-suggest form fields
-- 📤 Planned: Export to CSV
+- ✅ Export to CSV
+- ✅ Import CSV to app
 - 🌐 Planned: Full MERN stack integration (MongoDB + Express + Node.js)
 
 ---

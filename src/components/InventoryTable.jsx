@@ -115,6 +115,16 @@ const exportToCSV = () => {
 
 
 const importFromCSV = () => {
+  const csvHeaderMap = {
+    "品番": "itemNumber",
+    "品名": "itemName",
+    "生産日": "productionDate",
+    "在庫": "stock",
+    "保管場所": "storageLocation",
+    "状態": "status",
+    "備考": "remarks"
+  };
+  
   const input = document.createElement("input");
   input.type = "file";
   input.accept = ".csv";
@@ -123,14 +133,27 @@ const importFromCSV = () => {
     const reader = new FileReader();
     reader.onload = (event) => {
       const text = event.target.result;
-      const rows = text.split("\n").map(row => row.split(","));
+      const rows = text
+      .trim()
+      .split("\n")
+      .map(row =>
+        row
+          .split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/)
+          .map(cell => cell.replace(/^"|"$/g, "").trim())
+      );
       const headers = rows[0];
-      const inventoryData = rows.slice(1).map(row => {
+      const inventoryData = rows.slice(1).filter(row => row.length >= headers.length).map(row => {
         return headers.reduce((obj, header, index) => {
-          obj[header] = row[index];
+          const key = csvHeaderMap[header.trim()] || header.trim();
+          let value = row[index];
+          
+          if (key === "stock") value = Number(value);
+          if (key === "productionDate") value = new Date(value).toISOString().split("T")[0];
+      
+          obj[key] = value;
           return obj;
         }, {});
-      });
+      }); 
 
       if (inventoryData.length === 0) {
         showToast("⚠️ インポートするデータがありません", "warning");
